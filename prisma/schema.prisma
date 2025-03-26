@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+  isActive  Boolean  @default(true)
+  supports  Support[]
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+
+model Support {
+  id          Int      @id @default(autoincrement())
+  name      String      // nombre de la persona
+  description String
+  status      String   @default("Pendiente") // Ej: "Pendiente", "En Progreso", "Resuelto", "Cerrado"
+  startedAt   DateTime @default(now()) // Fecha y hora en que se comenzó a trabajar en el soporte
+  resolvedAt  DateTime @default(now()) // Fecha y hora en que se resolvió el soporte
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+}
